@@ -16,7 +16,7 @@ public class LanguageTrainingMapper extends Mapper<LongWritable, Text, Text, Int
   protected void map(final LongWritable key,
                      final Text value,
                      final Context context) throws IOException, InterruptedException {
-    for (Bigram bigram : BigramExtractor.extractCounted(value.toString()).keySet())
+    for (Bigram bigram : BigramExtractor.counted(value.toString()).keySet())
       context.write(Texts.quotes(bigram.name()), one);
   }
 }

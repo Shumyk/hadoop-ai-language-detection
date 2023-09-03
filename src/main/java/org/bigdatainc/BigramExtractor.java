@@ -17,7 +17,7 @@ public class BigramExtractor {
   public static final int BIGRAM_LENGTH = 2;
 
   // TODO: think of return type object
-  public static Map<Bigram, Count> extractCounted(final CharSequence text) {
+  public static Map<Bigram, Count> counted(final CharSequence text) {
     final CharSequence readyText = Texts.applyPadding(text);
     final int endPos = readyText.length() - (BIGRAM_LENGTH - 1);
 

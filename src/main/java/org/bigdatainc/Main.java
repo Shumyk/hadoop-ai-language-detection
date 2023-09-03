@@ -8,6 +8,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.bigdatainc.detection.LanguageDetectionMapper;
+import org.bigdatainc.detection.LanguageDetectionReducer;
 import org.bigdatainc.training.LanguageTrainingMapper;
 import org.bigdatainc.training.LanguageTraningReducer;
 import org.bigdatainc.util.FileUtil;
@@ -55,10 +57,10 @@ public class Main {
         final Configuration config = new Configuration();
 
         final Job job = Job.getInstance(config, "Language Detection");
-        job.setJarByClass(LanguageDetection.class);
-        job.setMapperClass(LanguageDetection.BigramMapper.class);
-        job.setCombinerClass(LanguageDetection.BigramReducer.class);
-        job.setReducerClass(LanguageDetection.BigramReducer.class);
+        job.setJarByClass(LanguageDetectionMapper.class);
+        job.setMapperClass(LanguageDetectionMapper.class);
+        job.setCombinerClass(LanguageDetectionReducer.class);
+        job.setReducerClass(LanguageDetectionReducer.class);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
