@@ -23,13 +23,13 @@ public final class FileUtil {
   private FileUtil() {}
 
   public static final String LANG_DIRNAME = "lang/";
-  public static final String HADOOP_RESULT_FILE = "part";
+  public static final String HADOOP_RESULT_FILENAME = "part";
   public static final String HADOOP_OUTPUTS_DIRNAME = "hadoop-outputs";
   public static final String DETECTION_RESULTS_FILENAME_PATTERN = "detection-results-%s.txt";
 
   public static LanguageProfiles loadLanguageProfiles(final Configuration configuration) throws IOException {
-    final var languageProfilesDirpath = HadoopPaths.resolveSibling(configuration, LANG_DIRNAME);
     final Set<LanguageProfile> profiles = new HashSet<>();
+    final var languageProfilesDirpath = HadoopPaths.resolveSibling(configuration, LANG_DIRNAME);
 
     try (FileSystem fileSystem = FileSystem.get(configuration)) {
       for (final var languageProfileFileStatus : fileSystem.listStatus(languageProfilesDirpath)) {
@@ -78,12 +78,15 @@ public final class FileUtil {
 
 
   private static File[] listFiles(final File dir) {
-    return requireNonNull(dir.listFiles(), "Files in directory should not be null");
+    return requireNonNull(
+        dir.listFiles(),
+        "Files in directory [%s] should not be null".formatted(dir.toString())
+    );
   }
 
   private static Path findComputationResultsPath(final File[] filesInOutputsDir) {
     return Arrays.stream(filesInOutputsDir)
-        .filter(file -> file.getName().startsWith(HADOOP_RESULT_FILE))
+        .filter(file -> file.getName().startsWith(HADOOP_RESULT_FILENAME))
         .findFirst()
         .orElseThrow(() -> new IllegalStateException("Could not find results file"))
         .toPath();

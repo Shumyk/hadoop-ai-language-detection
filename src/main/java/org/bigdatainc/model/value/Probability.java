@@ -15,12 +15,12 @@ public record Probability(double value) {
   }
 
 
-  public Probability calculate(final double weight,
-                               final Probability bigramProbability) {
+  public Probability multiply(final double weight,
+                              final Probability bigramProbability) {
     return Probability.of(value * (weight + bigramProbability.value()));
   }
 
-  public Probability divide(final double sumProbability) {
-    return Probability.of(value / sumProbability);
+  public Probability divide(final double divider) {
+    return Probability.of(value / divider);
   }
 }

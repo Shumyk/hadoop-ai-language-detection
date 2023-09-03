@@ -1,7 +1,5 @@
 package org.bigdatainc.model;
 
-import static java.util.Optional.ofNullable;
-
 import java.util.HashMap;
 import java.util.Map;
 import org.bigdatainc.model.value.Language;
@@ -13,11 +11,6 @@ public class LanguageProbabilities extends HashMap<Language, Probability> {
   public LanguageProbabilities() {super();}
 
   public LanguageProbabilities(final Map<Language, Probability> input) {super(input);}
-
-  public static LanguageProbabilities nullable(final LanguageProbabilities oldProbability) {
-    return ofNullable(oldProbability)
-        .orElseGet(LanguageProbabilities::new);
-  }
 
   public static LanguageProbabilities empty() {return EMPTY;}
 

@@ -15,6 +15,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.bigdatainc.model.BigramsProfiles;
 import org.bigdatainc.model.LanguageProbabilities;
 import org.bigdatainc.model.LanguageProfiles;
 import org.bigdatainc.model.value.Bigram;
@@ -93,7 +94,7 @@ public class LanguageDetection {
       forEach((lang, currentProbability) -> {
         for (long x = 0; x < count.value(); x++) {
           final Probability bigramProbability = langProbabilities.getOrDefault(lang, Probability.zero());
-          put(lang, currentProbability.calculate(weight, bigramProbability));
+          put(lang, currentProbability.multiply(weight, bigramProbability));
         }
       });
     }

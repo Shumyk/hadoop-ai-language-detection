@@ -7,7 +7,7 @@ public final class Texts {
 
     public static final char PADDING = ' ';
     public static final String SPACE = " ";
-    public static final String SPECIAL_CHARS_REGEX = "[!?^$\\-+*<>(){}\\[\\].,‘\"]";
+    public static final String SPECIAL_CHARS_REGEX = "[!?^$/\\-+*<>(){}\\[\\].,‘\"]";
 
     public static Text quotes(final String x) {
         return new Text("\"%s\"".formatted(x));
