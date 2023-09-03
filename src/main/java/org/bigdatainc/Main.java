@@ -8,6 +8,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.bigdatainc.training.LanguageTrainingMapper;
+import org.bigdatainc.training.LanguageTraningReducer;
 import org.bigdatainc.util.FileUtil;
 
 public class Main {
@@ -31,10 +33,10 @@ public class Main {
         config.set("mapreduce.output.textoutputformat.separator", ":");
 
         final Job job = Job.getInstance(config, "Language Training");
-        job.setJarByClass(LanguageTraining.class);
-        job.setMapperClass(LanguageTraining.TrainingMapper.class);
-        job.setCombinerClass(LanguageTraining.TraningReducer.class);
-        job.setReducerClass(LanguageTraining.TraningReducer.class);
+        job.setJarByClass(LanguageTrainingMapper.class);
+        job.setMapperClass(LanguageTrainingMapper.class);
+        job.setCombinerClass(LanguageTraningReducer.class);
+        job.setReducerClass(LanguageTraningReducer.class);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
