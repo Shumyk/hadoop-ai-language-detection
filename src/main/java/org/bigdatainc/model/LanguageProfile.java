@@ -5,18 +5,19 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.Arrays;
 import java.util.List;
+import org.bigdatainc.model.value.Language;
 
 public record LanguageProfile(
-    String language,
+    Language language,
     int totalOccurrences,
-    List<Bigram> bigrams
+    List<BigramData> bigrams
 ) {
 
-  public static LanguageProfile parse(final String language,
+  public static LanguageProfile parse(final Language language,
                                       final byte[] contentBytes) {
     final int[] totalOccurrences = {0};
     return Arrays.stream(new String(contentBytes).split(System.lineSeparator()))
-        .map(Bigram::parse)
+        .map(BigramData::parse)
         .peek(bigram -> totalOccurrences[0] += bigram.occurrences())
         .collect(collectingAndThen(toList(), x -> new LanguageProfile(language, totalOccurrences[0], x)));
   }

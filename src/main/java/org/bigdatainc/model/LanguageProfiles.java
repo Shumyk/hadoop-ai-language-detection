@@ -13,7 +13,7 @@ public class LanguageProfiles extends LinkedList<LanguageProfile> {
     return (int) stream()
         .map(LanguageProfile::bigrams)
         .flatMap(List::stream)
-        .map(Bigram::name)
+        .map(BigramData::name)
         .distinct()
         .count();
   }

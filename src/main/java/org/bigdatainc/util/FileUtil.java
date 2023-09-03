@@ -17,6 +17,7 @@ import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.bigdatainc.model.LanguageProfile;
 import org.bigdatainc.model.LanguageProfiles;
+import org.bigdatainc.model.value.Language;
 
 public final class FileUtil {
   private FileUtil() {}
@@ -33,10 +34,10 @@ public final class FileUtil {
     try (FileSystem fileSystem = FileSystem.get(configuration)) {
       for (final var languageProfileFileStatus : fileSystem.listStatus(languageProfilesDirpath)) {
         final var languageProfileFilepath = languageProfileFileStatus.getPath();
-        final String languageName = languageProfileFilepath.getName();
+        final Language language = Language.of(languageProfileFilepath.getName());
 
         try (FSDataInputStream is = fileSystem.open(languageProfileFilepath)) {
-          profiles.add(LanguageProfile.parse(languageName, is.readAllBytes()));
+          profiles.add(LanguageProfile.parse(language, is.readAllBytes()));
         }
       }
     }
