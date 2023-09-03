@@ -7,11 +7,12 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.bigdatainc.util.Texts;
 
 public class LanguageTraining {
     private LanguageTraining() {}
 
-    public static final int FREQUENCY = 7;
+    public static final int MIN_OCCURRENCES = 7;
 
     public static class TrainingMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
         private static final IntWritable one = new IntWritable(1);
@@ -20,9 +21,8 @@ public class LanguageTraining {
         protected void map(final LongWritable key,
                            final Text value,
                            final Context context) throws IOException, InterruptedException {
-            for (String bigram : BigramExtractor.extract(value.toString())) {
-                context.write(new Text("\"" + bigram + "\""), one);
-            }
+            for (String bigram : BigramExtractor.extractCounted(value.toString()).keySet())
+                context.write(Texts.quotes(bigram), one);
         }
     }
 
@@ -34,9 +34,8 @@ public class LanguageTraining {
             final int sum = StreamSupport.stream(values.spliterator(), false)
                     .mapToInt(IntWritable::get)
                     .sum();
-            if (sum > LanguageTraining.FREQUENCY) {
+            if (sum > LanguageTraining.MIN_OCCURRENCES)
                 context.write(key, new IntWritable(sum));
-            }
         }
     }
 }
