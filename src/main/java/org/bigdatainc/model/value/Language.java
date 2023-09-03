@@ -7,6 +7,6 @@ public record Language(String value) {
   }
 
   public static Language notResolved() {
-    return new Language("Not Resolved");
+    return new Language("unresolved");
   }
 }
