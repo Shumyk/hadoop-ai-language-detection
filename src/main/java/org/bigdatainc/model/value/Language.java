@@ -6,7 +6,7 @@ public record Language(String value) {
     return new Language(value);
   }
 
-  public static Language notFound() {
-    return new Language("Not Found");
+  public static Language notResolved() {
+    return new Language("Not Resolved");
   }
 }

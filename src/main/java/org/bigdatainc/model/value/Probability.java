@@ -1,6 +1,6 @@
 package org.bigdatainc.model.value;
 
-public record Probability(double value) {
+public record Probability(double value) implements Comparable<Probability> {
 
   public static Probability of(final double value) {
     return new Probability(value);
@@ -22,5 +22,10 @@ public record Probability(double value) {
 
   public Probability divide(final double divider) {
     return Probability.of(value / divider);
+  }
+
+  @Override
+  public int compareTo(final Probability o) {
+    return Double.compare(o.value, value);
   }
 }
