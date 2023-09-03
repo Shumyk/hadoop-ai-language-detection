@@ -15,6 +15,7 @@ import java.util.Set;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
+import org.bigdatainc.exception.WrappedException;
 import org.bigdatainc.model.LanguageProfile;
 import org.bigdatainc.model.LanguageProfiles;
 import org.bigdatainc.model.value.Language;
@@ -49,13 +50,14 @@ public final class FileUtil {
   }
 
   public static void copyLanguageTrainingResults(final String inputPath,
-                                                 final String hadoopOutputFolderPath) throws IOException {
+                                                 final String hadoopOutputFolderPath) {
     final String language = resolveFilename(inputPath);
-    doCopy(hadoopOutputFolderPath, LANG_DIRNAME + language);
+    WrappedException.wrap(() -> doCopy(hadoopOutputFolderPath, LANG_DIRNAME + language));
   }
 
-  public static void copyLanguageDetectionResults(final String hadoopOutputFolderPath) throws IOException {
-    doCopy(hadoopOutputFolderPath, DETECTION_RESULTS_FILENAME_PATTERN.formatted(Instant.now()));
+  public static void copyLanguageDetectionResults(final String hadoopOutputFolderPath) {
+    final String filename = DETECTION_RESULTS_FILENAME_PATTERN.formatted(Instant.now());
+    WrappedException.wrap(() -> doCopy(hadoopOutputFolderPath, filename));
   }
 
 

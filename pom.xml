@@ -38,7 +38,7 @@
                         <archive>
                             <manifest>
                                 <mainClass>
-                                    org.bigdatainc.Main
+                                    org.bigdatainc.LanguageDetectionHadoop
                                 </mainClass>
                             </manifest>
                         </archive>

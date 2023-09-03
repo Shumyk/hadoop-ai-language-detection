@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 import org.bigdatainc.model.value.Bigram;
@@ -16,8 +17,7 @@ public class BigramExtractor {
 
   public static final int BIGRAM_LENGTH = 2;
 
-  // TODO: think of return type object
-  public static Map<Bigram, Count> counted(final CharSequence text) {
+  public static List<Bigram> flat(final CharSequence text) {
     final CharSequence readyText = Texts.applyPadding(text);
     final int endPos = readyText.length() - (BIGRAM_LENGTH - 1);
 
@@ -28,6 +28,12 @@ public class BigramExtractor {
         .map(Texts::lowerCaseIfAllUpper)
         .filter(Texts::isAlphaSpace)
         .map(Bigram::of)
+        .toList();
+  }
+
+  public static Map<Bigram, Count> counted(final CharSequence text) {
+    return flat(text)
+        .stream()
         .collect(groupingBy(identity(), collectingAndThen(counting(), Count::of)));
   }
 
