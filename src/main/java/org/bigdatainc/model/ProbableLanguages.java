@@ -26,11 +26,10 @@ public class ProbableLanguages extends HashMap<Language, Probability> {
                     final LanguageProbabilities profilesProbabilities,
                     final Count bigramCount) {
     forEach((language, currentProbability) -> {
-      for (long x = 0; x < bigramCount.value(); x++) {
-        final var profileProbabilityForLanguage = profilesProbabilities.getOrDefault(language, Probability.zero());
-        final var newProbability = currentProbability.multiply(weight, profileProbabilityForLanguage);
-        put(language, newProbability);
-      }
+      final Probability languageProfileProbability = profilesProbabilities.getOrZero(language);
+      for (long x = 0; x < bigramCount.value(); x++)
+        currentProbability = currentProbability.multiply(weight, languageProfileProbability);
+      put(language, currentProbability);
     });
   }
 

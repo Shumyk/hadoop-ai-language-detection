@@ -45,16 +45,16 @@ public class LanguageDetectionMapper extends Mapper<LongWritable, Text, Text, Te
   }
 
   private DetectedLanguage detectLanguage(final Map<Bigram, Count> countedBigrams) {
-    final ProbableLanguages probabilities = ProbableLanguages.init(bigramsProfiles.languages());
+    final ProbableLanguages probables = ProbableLanguages.init(bigramsProfiles.languages());
 
     for (final var bigram$count : countedBigrams.entrySet()) {
       final Bigram bigram = bigram$count.getKey();
       final Count count = bigram$count.getValue();
-      probabilities.merge(WEIGHT, bigramsProfiles.getProbabilities(bigram), count);
+      probables.merge(WEIGHT, bigramsProfiles.getProbabilities(bigram), count);
 
-      if (probabilities.normalize() > CONFIDENCE_THRESHOLD)
+      if (probables.normalize() > CONFIDENCE_THRESHOLD)
         break;
     }
-    return probabilities.bestGuess();
+    return probables.bestGuess();
   }
 }

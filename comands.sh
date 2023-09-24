@@ -23,6 +23,7 @@ hadoop jar target/hadoop-language-detection-1.0-SNAPSHOT.jar dutch.txt src/main/
 # There are two files with words:
 #   * guess-dutch.txt          - only Dutch sentences.
 #   * guess-english+dutch.txt  - English + Dutch sentences, to verify that model correctly resolves different languages.
+#
 # The commands generate Detection Results in ./src/main/resources directory.
 # Filenames would be alike 'detection-results-2023-09-03T11:58:31.115828Z.txt'.
 #

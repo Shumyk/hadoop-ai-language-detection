@@ -19,4 +19,8 @@ public class LanguageProbabilities extends HashMap<Language, Probability> {
     put(language, probability);
     return this;
   }
+
+  public Probability getOrZero(final Language language) {
+    return getOrDefault(language, Probability.zero());
+  }
 }

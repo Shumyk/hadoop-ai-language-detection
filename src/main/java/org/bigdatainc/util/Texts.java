@@ -28,7 +28,7 @@ public final class Texts {
   }
 
   public static String lowerCaseIfAllUpper(final String x) {
-    if (x.equals(x.toUpperCase()))
+    if (!x.contains(SPACE) && x.equals(x.toUpperCase()))
       return x.toLowerCase();
     return x;
   }

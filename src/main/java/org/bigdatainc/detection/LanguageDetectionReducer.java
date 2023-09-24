@@ -11,8 +11,8 @@ public class LanguageDetectionReducer extends Reducer<Text, Text, Text, Text> {
                      final Iterable<Text> values,
                      final Context context) throws IOException, InterruptedException {
     context.write(key, new Text());
-    for (Text value : values) {
-      context.write(new Text("\t->"), value);
-    }
+    for (Text value : values)
+      if (!value.toString().trim().isEmpty())
+        context.write(new Text("\t->"), value);
   }
 }
