@@ -39,9 +39,9 @@ public class LanguageDetectionMapper extends Mapper<LongWritable, Text, Text, Te
 
     final DetectedLanguage detectedLanguage = detectLanguage(inputTextCountedBigrams);
 
-    final Text outputKey = Texts.just(detectedLanguage.language().value());
-    final Text outputValue = Texts.keyValue(detectedLanguage, inputTextValue);
-    context.write(outputKey, outputValue);
+    final Text languageKey = Texts.capitalize(detectedLanguage.language().value());
+    final Text probabilityToInputText = Texts.keyValue(detectedLanguage.probabilityFormatted(), inputTextValue);
+    context.write(languageKey, probabilityToInputText);
   }
 
   private DetectedLanguage detectLanguage(final Map<Bigram, Count> countedBigrams) {

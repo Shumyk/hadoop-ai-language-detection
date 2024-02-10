@@ -15,12 +15,16 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import rocks.shumyk.hadoop.ai.language.detector.util.FileUtil;
 
 public class HadoopJobRunner {
+  @SuppressWarnings("java:S107")
   private HadoopJobRunner(final String jobName,
                           final Set<Entry<String, String>> configs,
                           final Class<? extends Mapper<?, ?, ?, ?>> mapperClass,
                           final Class<? extends Reducer<?, ?, ?, ?>> reducerClass,
+                          final Class<?> mapOutputKeyClass,
+                          final Class<?> mapOutputValueClass,
                           final Class<?> outputKeyClass,
                           final Class<?> outputValueClass,
                           final String inputPath,
@@ -30,6 +34,8 @@ public class HadoopJobRunner {
     this.configs = configs;
     this.mapperClass = mapperClass;
     this.reducerClass = reducerClass;
+    this.mapOutputKeyClass = nonNull(mapOutputKeyClass) ? mapOutputKeyClass : outputKeyClass;
+    this.mapOutputValueClass = nonNull(mapOutputValueClass) ? mapOutputValueClass : outputValueClass;
     this.outputKeyClass = outputKeyClass;
     this.outputValueClass = outputValueClass;
     this.inputPath = inputPath;
@@ -41,6 +47,8 @@ public class HadoopJobRunner {
   private final Set<Entry<String, String>> configs;
   private final Class<? extends Mapper<?, ?, ?, ?>> mapperClass;
   private final Class<? extends Reducer<?, ?, ?, ?>> reducerClass;
+  private final Class<?> mapOutputKeyClass;
+  private final Class<?> mapOutputValueClass;
   private final Class<?> outputKeyClass;
   private final Class<?> outputValueClass;
   private final String inputPath;
@@ -58,20 +66,20 @@ public class HadoopJobRunner {
     final Job job = Job.getInstance(config, jobName);
     job.setJarByClass(mapperClass);
     job.setMapperClass(mapperClass);
-    job.setCombinerClass(reducerClass);
     job.setReducerClass(reducerClass);
-    job.setNumReduceTasks(1);
 
+    job.setMapOutputKeyClass(mapOutputKeyClass);
+    job.setMapOutputValueClass(mapOutputValueClass);
     job.setOutputKeyClass(outputKeyClass);
     job.setOutputValueClass(outputValueClass);
 
     FileInputFormat.addInputPath(job, new Path(inputPath));
     FileOutputFormat.setOutputPath(job, new Path(outputPath));
 
+    FileUtil.preClean(outputPath);
     if (job.waitForCompletion(false))
       cleanup.run();
   }
-
 
 
   public static class Builder {
@@ -84,6 +92,8 @@ public class HadoopJobRunner {
     private final Set<Entry<String, String>> configs;
     private Class<? extends Mapper<?, ?, ?, ?>> mapperClass;
     private Class<? extends Reducer<?, ?, ?, ?>> reducerClass;
+    private Class<?> mapOutputKeyClass;
+    private Class<?> mapOutputValueClass;
     private Class<?> outputKeyClass;
     private Class<?> outputValueClass;
     private String inputPath;
@@ -102,6 +112,16 @@ public class HadoopJobRunner {
 
     public Builder reducer(final Class<? extends Reducer<?, ?, ?, ?>> reducerClass) {
       this.reducerClass = reducerClass;
+      return this;
+    }
+
+    public Builder mapOutputKey(final Class<?> mapOutputKeyClass) {
+      this.mapOutputKeyClass = mapOutputKeyClass;
+      return this;
+    }
+
+    public Builder mapOutputValue(final Class<?> mapOutputValueClass) {
+      this.mapOutputValueClass = mapOutputValueClass;
       return this;
     }
 
@@ -137,6 +157,8 @@ public class HadoopJobRunner {
           configs,
           mapperClass,
           reducerClass,
+          mapOutputKeyClass,
+          mapOutputValueClass,
           outputKeyClass,
           outputValueClass,
           inputPath,

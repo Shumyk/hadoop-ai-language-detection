@@ -3,21 +3,19 @@ package rocks.shumyk.hadoop.ai.language.detector.model;
 import rocks.shumyk.hadoop.ai.language.detector.model.value.Probability;
 import rocks.shumyk.hadoop.ai.language.detector.model.value.Bigram;
 
-public record BigramData(
-    Bigram name,
-    int occurrences
-) {
+public record BigramOccurrences(Bigram name,
+                                int occurrences) {
 
   /**
    * @param bigramString - bigram to occurrences entry, e.g. '"to":69'
-   * @return parsed {@link BigramData}
+   * @return parsed {@link BigramOccurrences}
    */
-  public static BigramData parse(final String bigramString) {
+  public static BigramOccurrences parse(final String bigramString) {
     final String[] bigramParts = bigramString.split(":");
     final String name = bigramParts[0].replace("\"", "");
     final int occurrences = Integer.parseInt(bigramParts[1]);
 
-    return new BigramData(Bigram.of(name), occurrences);
+    return new BigramOccurrences(Bigram.of(name), occurrences);
   }
 
   public Probability probability(final double totalOccurrences) {

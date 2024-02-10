@@ -11,9 +11,9 @@ public class LanguageProfiles extends LinkedList<LanguageProfile> {
 
   public int bigramsCount() {
     return (int) stream()
-        .map(LanguageProfile::bigrams)
+        .map(LanguageProfile::bigramOccurrences)
         .flatMap(List::stream)
-        .map(BigramData::name)
+        .map(BigramOccurrences::name)
         .distinct()
         .count();
   }

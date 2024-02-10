@@ -24,6 +24,7 @@ public record Probability(double value) implements Comparable<Probability> {
     return Probability.of(value / divider);
   }
 
+
   @Override
   public int compareTo(final Probability o) {
     return Double.compare(value, o.value);

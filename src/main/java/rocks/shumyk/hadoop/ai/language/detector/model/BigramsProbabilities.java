@@ -12,7 +12,7 @@ public class BigramsProbabilities extends HashMap<Bigram, LanguageProbabilities>
   }
 
   public void add(final LanguageProfile profile,
-                  final BigramData bigram) {
+                  final BigramOccurrences bigram) {
     final Probability probability = bigram.probability(profile.totalOccurrences());
     this.compute(
         bigram.name(),

@@ -1,7 +1,7 @@
 package rocks.shumyk.hadoop.ai.language.detector.model;
 
-import java.util.Collections;
-import java.util.HashSet;
+import static java.util.stream.Collectors.toUnmodifiableSet;
+
 import java.util.Set;
 import rocks.shumyk.hadoop.ai.language.detector.model.value.Bigram;
 import rocks.shumyk.hadoop.ai.language.detector.model.value.Language;
@@ -11,19 +11,19 @@ public class BigramsProfiles {
   private final BigramsProbabilities bigramsProbabilities;
 
   public BigramsProfiles(final LanguageProfiles profiles) {
-    this.languages = new HashSet<>(profiles.size());
+    this.languages = profiles.stream()
+        .map(LanguageProfile::language)
+        .collect(toUnmodifiableSet());
     this.bigramsProbabilities = new BigramsProbabilities(profiles.bigramsCount());
 
-    profiles.stream()
-        .peek(profile -> languages.add(profile.language()))
-        .forEach(profile ->
-            profile.bigrams()
-                .forEach(bigram -> bigramsProbabilities.add(profile, bigram))
-        );
+    for (final LanguageProfile profile : profiles)
+      profile
+          .bigramOccurrences()
+          .forEach(occurrences -> bigramsProbabilities.add(profile, occurrences));
   }
 
   public Set<Language> languages() {
-    return Collections.unmodifiableSet(languages);
+    return languages;
   }
 
   public LanguageProbabilities getProbabilities(final Bigram bigram) {

@@ -38,7 +38,7 @@ public class ProbableLanguages extends HashMap<Language, Probability> {
     final double sumProbability = this.values().stream().mapToDouble(Probability::value).sum();
     assert sumProbability != ZERO : "Total sum of probabilities is zero!";
 
-    this.forEach((lang, oldProbability) -> {
+    forEach((lang, oldProbability) -> {
       final Probability normalizedProbability = oldProbability.divide(sumProbability);
       put(lang, normalizedProbability);
 

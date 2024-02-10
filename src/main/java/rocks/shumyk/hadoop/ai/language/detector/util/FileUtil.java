@@ -1,5 +1,6 @@
 package rocks.shumyk.hadoop.ai.language.detector.util;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
 import java.io.File;
@@ -32,18 +33,19 @@ public final class FileUtil {
     final Set<LanguageProfile> profiles = new HashSet<>();
     final var languageProfilesDirpath = HadoopPaths.resolveSibling(configuration, LANG_DIRNAME);
 
-    try (FileSystem fileSystem = FileSystem.get(configuration)) {
+    try (final FileSystem fileSystem = FileSystem.get(configuration)) {
       for (final var languageProfileFileStatus : fileSystem.listStatus(languageProfilesDirpath)) {
         final var languageProfileFilepath = languageProfileFileStatus.getPath();
         final Language language = Language.of(languageProfileFilepath.getName());
 
-        try (FSDataInputStream is = fileSystem.open(languageProfileFilepath)) {
+        try (final FSDataInputStream is = fileSystem.open(languageProfileFilepath)) {
           profiles.add(LanguageProfile.parse(language, is.readAllBytes()));
         }
       }
     }
     return new LanguageProfiles(profiles);
   }
+
 
   public static String hadoopOutputsDirPath(final String outputPath) {
     return Paths.get(outputPath, HADOOP_OUTPUTS_DIRNAME).toString();
@@ -52,12 +54,21 @@ public final class FileUtil {
   public static void copyLanguageTrainingResults(final String inputPath,
                                                  final String hadoopOutputFolderPath) {
     final String language = resolveFilename(inputPath);
-    WrappedException.wrap(() -> doCopy(hadoopOutputFolderPath, LANG_DIRNAME + language));
+    WrappedException.wrap(() -> copy(hadoopOutputFolderPath, LANG_DIRNAME + language));
   }
 
   public static void copyLanguageDetectionResults(final String hadoopOutputFolderPath) {
     final String filename = DETECTION_RESULTS_FILENAME_PATTERN.formatted(Instant.now());
-    WrappedException.wrap(() -> doCopy(hadoopOutputFolderPath, filename));
+    WrappedException.wrap(() -> copy(hadoopOutputFolderPath, filename));
+  }
+
+  public static void preClean(final String hadoopOutputFolderPath) {
+    final File hadoopOutputFolder = new File(hadoopOutputFolderPath);
+    final File[] filesInOutputsDir = hadoopOutputFolder.listFiles();
+    if (isNull(filesInOutputsDir))
+      return;
+
+    WrappedException.wrap(() -> removeDirectory(hadoopOutputFolder, filesInOutputsDir));
   }
 
 
@@ -66,8 +77,8 @@ public final class FileUtil {
     return filenameWithExtension.split("\\.")[0];
   }
 
-  private static void doCopy(final String hadoopOutputFolderPath,
-                             final String destination) throws IOException {
+  private static void copy(final String hadoopOutputFolderPath,
+                           final String destination) throws IOException {
     final File hadoopOutputFolder = new File(hadoopOutputFolderPath);
     final File[] filesInOutputsDir = listFiles(hadoopOutputFolder);
 
@@ -96,9 +107,8 @@ public final class FileUtil {
 
   private static void removeDirectory(final File dir,
                                       final File[] dirFiles) throws IOException {
-    for (final File toDelete : dirFiles) {
+    for (final File toDelete : dirFiles)
       Files.delete(toDelete.toPath());
-    }
     Files.delete(dir.toPath());
   }
 }

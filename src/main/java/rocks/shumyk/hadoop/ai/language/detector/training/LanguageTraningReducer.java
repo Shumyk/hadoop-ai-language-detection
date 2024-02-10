@@ -7,16 +7,17 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 public class LanguageTraningReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
-  public static final int MIN_OCCURRENCES = 7;
+  public static final int OCCURRENCES_THRESHOLD = 7;
 
   @Override
-  protected void reduce(final Text key,
-                        final Iterable<IntWritable> values,
+  protected void reduce(final Text bigram,
+                        final Iterable<IntWritable> occurrences,
                         final Context context) throws IOException, InterruptedException {
-    final int sum = StreamSupport.stream(values.spliterator(), false)
+    final int bigramOccurrences = StreamSupport
+        .stream(occurrences.spliterator(), false)
         .mapToInt(IntWritable::get)
         .sum();
-    if (sum > MIN_OCCURRENCES)
-      context.write(key, new IntWritable(sum));
+    if (bigramOccurrences > OCCURRENCES_THRESHOLD)
+      context.write(bigram, new IntWritable(bigramOccurrences));
   }
 }
