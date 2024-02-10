@@ -68,13 +68,6 @@ public class HadoopJobRunner {
     FileInputFormat.addInputPath(job, new Path(inputPath));
     FileOutputFormat.setOutputPath(job, new Path(outputPath));
 
-//    final ControlledJob controlledJob = new ControlledJob(job.getConfiguration());
-//    controlledJob.addDependingJob(null);
-//
-//    final JobControl jobControl = new JobControl("");
-//    jobControl.
-
-
     if (job.waitForCompletion(false))
       cleanup.run();
   }
