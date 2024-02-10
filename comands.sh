@@ -2,7 +2,7 @@
 # Hadoop version - 3.3.6
 # Java   version - openjdk 19.0.2
 
-# Build JAR file that would be located in ./target/hadoop-language-detection-1.0-SNAPSHOT.jar
+# Build JAR file that will be located at ./target/hadoop-language-detection-1.0-SNAPSHOT.jar
 mvn clean package
 
 # Train model with input files.

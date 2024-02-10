@@ -37,9 +37,7 @@
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>
-                                    org.bigdatainc.LanguageDetectionHadoop
-                                </mainClass>
+                                <mainClass>rocks.shumyk.LanguageDetectionHadoop</mainClass>
                             </manifest>
                         </archive>
                     </configuration>
